@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VIHA AI Chatbot</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: #0f0f0f;
+    display: flex;
+}
+
+/* Main container */
+.chat-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #1e1e1e;
+}
+
+/* Header */
+.chat-header {
+    padding: 15px;
+    background: #111;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    border-bottom: 1px solid #333;
+}
+
+/* Chat messages area */
+.chat-box {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    color: white;
+}
+
+/* Messages */
+.message {
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    max-width: 75%;
+    line-height: 1.5;
+}
+
+.user {
+    background: #2563eb;
+    align-self: flex-end;
+}
+
+.bot {
+    background: #2d2d2d;
+    align-self: flex-start;
+}
+
+/* Input area */
+.chat-input {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #333;
+    background: #111;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+}
+
+.chat-input button {
+    margin-left: 10px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+}
+
+.chat-input button:hover {
+    background: #1e40af;
+}
+</style>
+</head>
+
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        VIHA AI Chatbot
+    </div>
+
+    <div id="chatBox" class="chat-box"></div>
+
+    <div class="chat-input">
+        <input id="messageInput" type="text" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+async function sendMessage() {
+    const input = document.getElementById("messageInput");
+    const chatBox = document.getElementById("chatBox");
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    // User message
+    chatBox.innerHTML += `<div class="message user">${message}</div>`;
+    input.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // API call
+    const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+    });
+
+    const data = await res.json();
+
+    // Bot message
+    chatBox.innerHTML += `<div class="message bot">${data.reply}</div>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+
+</body>
+</html>
